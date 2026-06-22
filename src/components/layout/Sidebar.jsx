@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // Inline SVG icons to avoid lucide-react dependency issues
 const Zap = ({ className = '' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
 )
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const LayoutDashboard = ({ className = '' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 13h8V3H3v10zM21 21V11h-8v10h8zM3 21h8v-6H3v6z"/></svg>
@@ -29,9 +29,28 @@ const FileText = ({ className = '' }) => (
 
 export const Sidebar = ({ collapsed }) => {
   const [openMenu, setOpenMenu] = useState(null);
+  const location = useLocation();
 
   const toggleMenu = (menu) => {
-    setOpenMenu(openMenu === menu ? null : menu);
+    setOpenMenu((prev) => (prev === menu ? null : menu));
+  };
+
+  // Open parent menu according to current route
+  useEffect(() => {
+    const path = location.pathname || '/';
+    if (path.startsWith('/users')) setOpenMenu('users');
+    else if (path.startsWith('/settings')) setOpenMenu('settings');
+    else setOpenMenu(null);
+  }, [location.pathname]);
+
+  const isActive = (matchPath) => {
+    const path = location.pathname || '/';
+    return path === matchPath;
+  };
+
+  const isParentActive = (prefix) => {
+    const path = location.pathname || '/';
+    return path.startsWith(prefix);
   };
 
   return (
@@ -71,8 +90,7 @@ export const Sidebar = ({ collapsed }) => {
           <li>
             <Link
               to="/"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 
-      hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${isActive('/') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
             >
               <LayoutDashboard className="w-5 h-5" />
               <span className={`${collapsed ? 'hidden' : ''}`}>Dashboard</span>
@@ -82,9 +100,8 @@ export const Sidebar = ({ collapsed }) => {
           {/* USERS */}
           <li>
             <button
-              onClick={() => toggleMenu("users")}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-lg 
-      text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              onClick={() => toggleMenu('users')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive('/users') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <div className="flex items-center gap-3">
                 <Users className="w-5 h-5" />
@@ -100,14 +117,12 @@ export const Sidebar = ({ collapsed }) => {
             </button>
 
             {openMenu === "users" && (
-              <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
+                <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
 
                 <li>
                   <Link
                     to="/users/all"
-                    className="group flex items-center justify-between px-2 py-1.5 rounded-md 
-            text-sm text-slate-600 dark:text-slate-400 
-            hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/users/all') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
@@ -121,9 +136,7 @@ export const Sidebar = ({ collapsed }) => {
                 <li>
                   <Link
                     to="/users/add"
-                    className="group flex items-center justify-between px-2 py-1.5 rounded-md 
-            text-sm text-slate-600 dark:text-slate-400 
-            hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/users/add') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
@@ -141,9 +154,8 @@ export const Sidebar = ({ collapsed }) => {
           {/* SETTINGS */}
           <li>
             <button
-              onClick={() => toggleMenu("settings")}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-lg 
-      text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              onClick={() => toggleMenu('settings')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive('/settings') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <div className="flex items-center gap-3">
                 <Settings className="w-5 h-5" />
@@ -159,14 +171,12 @@ export const Sidebar = ({ collapsed }) => {
             </button>
 
             {openMenu === "settings" && (
-              <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
+                <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
 
                 <li>
                   <Link
                     to="/settings/general"
-                    className="group flex items-center justify-between px-2 py-1.5 rounded-md 
-            text-sm text-slate-600 dark:text-slate-400 
-            hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/settings/general') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
@@ -180,9 +190,7 @@ export const Sidebar = ({ collapsed }) => {
                 <li>
                   <Link
                     to="/settings/security"
-                    className="group flex items-center justify-between px-2 py-1.5 rounded-md 
-            text-sm text-slate-600 dark:text-slate-400 
-            hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition"
+                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/settings/security') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
