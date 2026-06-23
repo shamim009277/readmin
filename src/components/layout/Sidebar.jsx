@@ -64,13 +64,23 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
     setOpenMenu((prev) => (prev === menu ? null : menu));
   };
 
-  // Open parent menu according to current route
+  // Open parent menu according to current route (auto-expand matching parent)
   useEffect(() => {
     const path = location.pathname || '/';
-    if (path.startsWith('/users')) setOpenMenu('users');
-    else if (path.startsWith('/settings')) setOpenMenu('settings');
-    else setOpenMenu(null);
-  }, [location.pathname]);
+    const itemsList = menuData || MENU;
+
+    // find first parent whose child `to` matches the current path prefix
+    const matchedParent = itemsList.find((it) => {
+      if (!it.children || !it.children.length) return false;
+      return it.children.some((c) => typeof c.to === 'string' && c.to !== '#' && path.startsWith(c.to));
+    });
+
+    if (matchedParent) {
+      setOpenMenu(matchedParent.key);
+    } else {
+      setOpenMenu(null);
+    }
+  }, [location.pathname, menuData]);
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -143,11 +153,18 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
           {items.map((item) => {
             const Icon = item.icon;
             if (item.children && item.children.length) {
+              // derive a safe parent prefix from children `to` values that start with '/'
+              const parentPrefix = (() => {
+                const childWithPath = item.children.find((c) => c.to && typeof c.to === 'string' && c.to.startsWith('/'));
+                if (!childWithPath) return null;
+                const parts = childWithPath.to.split('/').filter(Boolean);
+                return parts.length ? `/${parts[0]}` : null;
+              })();
               return (
                 <li key={item.key}>
                   <button
                     onClick={() => toggleMenu(item.key)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive(item.children[0].to.split('/').slice(0,2).join('/')) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${parentPrefix && isParentActive(parentPrefix) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                   >
                     <div className="flex items-center gap-3">
                       {Icon && <Icon className="w-5 h-5" />}
