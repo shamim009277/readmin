@@ -1,33 +1,62 @@
 import React, { useState, useEffect } from 'react'
-// Inline SVG icons to avoid lucide-react dependency issues
-const Zap = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-)
 import { Link, useLocation } from 'react-router-dom'
 
-const LayoutDashboard = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 13h8V3H3v10zM21 21V11h-8v10h8zM3 21h8v-6H3v6z"/></svg>
-)
-const Users = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-)
-const Settings = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg>
-)
-const ChevronDown = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 9l6 6 6-6"/></svg>
-)
-const ChevronRight = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
-)
-const Folder = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7v12a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H12l-2-2H5a2 2 0 00-2 2z"/></svg>
-)
-const FileText = ({ className = '' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>
-)
+// Import specific icon modules directly to avoid bundling the entire lucide-react entrypoint
+import Zap from 'lucide-react/dist/esm/icons/zap.mjs'
+import LayoutDashboard from 'lucide-react/dist/esm/icons/layout-dashboard.mjs'
+import Users from 'lucide-react/dist/esm/icons/users.mjs'
+import Settings from 'lucide-react/dist/esm/icons/settings.mjs'
+import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right.mjs'
+import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down.mjs'
+import Award from 'lucide-react/dist/esm/icons/award.mjs'
+import Globe from 'lucide-react/dist/esm/icons/globe.mjs'
+import Folder from 'lucide-react/dist/esm/icons/folder.mjs'
+import FileText from 'lucide-react/dist/esm/icons/file-text.mjs'
 
-export const Sidebar = ({ collapsed }) => {
+// Default menu data (can be overridden via `menuData` prop)
+const MENU = [
+  { key: 'dashboard', label: 'Dashboard', to: '/', icon: LayoutDashboard },
+  {
+    key: 'users',
+    label: 'Users',
+    icon: Users,
+    children: [
+      { key: 'users-all', label: 'All Users', to: '/users/all' },
+      { key: 'users-add', label: 'Add User', to: '/users/add' },
+    ],
+  },
+  {
+    key: 'settings',
+    label: 'Settings',
+    icon: Settings,
+    children: [
+      { key: 'settings-general', label: 'General', to: '/settings/general' },
+      { key: 'settings-security', label: 'Security', to: '/settings/security' },
+    ],
+  },
+  {
+    key: 'authetication',
+    label: 'Authentication',
+    icon: Award,
+    children: [
+      { key: 'login', label: 'Login', to: '#' },
+      { key: 'register', label: 'Register', to: '#' },
+    ],
+  },
+  {
+    key: 'ui',
+    label: 'UI Components',
+    icon: Globe,
+    children: [
+      { key: 'table', label: 'Table', to: '/ui/table' },
+      { key: 'advance-table', label: 'Advance Table', to: '/ui/table-advance' },
+      { key: 'accordion', label: 'Accordion', to: '/ui/accordion' },
+      { key: 'modal', label: 'Modal', to: '/ui/modal' },
+    ],
+  },
+]
+
+export const Sidebar = ({ collapsed, menuData }) => {
   const [openMenu, setOpenMenu] = useState(null);
   const location = useLocation();
 
@@ -53,10 +82,12 @@ export const Sidebar = ({ collapsed }) => {
     return path.startsWith(prefix);
   };
 
+  const items = menuData || MENU;
+
   return (
     <div className={`transition duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10 ${collapsed ? 'w-20' : 'w-60'} h-screen`}>
       {/*--- logo ---*/}
-      <div className="p-4 border-b border-slate-200/50 dark:border-slate-700/50">
+      <div className="px-4 py-2 border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-lg rounded-xl">
             <Zap className="w-6 h-6 text-white" />
@@ -85,126 +116,63 @@ export const Sidebar = ({ collapsed }) => {
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
 
         <ul className="space-y-2">
-
-          {/* DASHBOARD */}
-          <li>
-            <Link
-              to="/"
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${isActive('/') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              <span className={`${collapsed ? 'hidden' : ''}`}>Dashboard</span>
-            </Link>
-          </li>
-
-          {/* USERS */}
-          <li>
-            <button
-              onClick={() => toggleMenu('users')}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive('/users') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-            >
-              <div className="flex items-center gap-3">
-                <Users className="w-5 h-5" />
-                <span className={`${collapsed ? 'hidden' : ''}`}>Users</span>
-              </div>
-
-              {!collapsed && (
-                <ChevronRight
-                  className={`w-4 h-4 transition-transform duration-200 ${openMenu === "users" ? "rotate-90" : ""
-                    }`}
-                />
-              )}
-            </button>
-
-            {openMenu === "users" && (
-                <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
-
-                <li>
-                  <Link
-                    to="/users/all"
-                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/users/all') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
+          {items.map((item) => {
+            const Icon = item.icon;
+            if (item.children && item.children.length) {
+              return (
+                <li key={item.key}>
+                  <button
+                    onClick={() => toggleMenu(item.key)}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive(item.children[0].to.split('/').slice(0,2).join('/')) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                      <span className={`${collapsed ? 'hidden' : ''}`}>All Users</span>
+                    <div className="flex items-center gap-3">
+                      {Icon && <Icon className="w-5 h-5" />}
+                      <span className={`${collapsed ? 'hidden' : ''}`}>{item.label}</span>
                     </div>
 
-                    <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
-                  </Link>
+                    {!collapsed && (
+                      <ChevronRight
+                        className={`w-4 h-4 transition-transform duration-200 ${openMenu === item.key ? 'rotate-90' : ''}`}
+                      />
+                    )}
+                  </button>
+
+                  {openMenu === item.key && (
+                    <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
+                      {item.children.map((child) => (
+                        <li key={child.key}>
+                          <Link
+                            to={child.to}
+                            className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive(child.to) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                              <span className={`${collapsed ? 'hidden' : ''}`}>{child.label}</span>
+                            </div>
+
+                            <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
+              )
+            }
 
-                <li>
-                  <Link
-                    to="/users/add"
-                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/users/add') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                      <span className={`${collapsed ? 'hidden' : ''}`}>Add User</span>
-                    </div>
-
-                    <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
-                  </Link>
-                </li>
-
-              </ul>
-            )}
-          </li>
-
-          {/* SETTINGS */}
-          <li>
-            <button
-              onClick={() => toggleMenu('settings')}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${isParentActive('/settings') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-            >
-              <div className="flex items-center gap-3">
-                <Settings className="w-5 h-5" />
-                <span className={`${collapsed ? 'hidden' : ''}`}>Settings</span>
-              </div>
-
-              {!collapsed && (
-                <ChevronRight
-                  className={`w-4 h-4 transition-transform duration-200 ${openMenu === "settings" ? "rotate-90" : ""
-                    }`}
-                />
-              )}
-            </button>
-
-            {openMenu === "settings" && (
-                <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
-
-                <li>
-                  <Link
-                    to="/settings/general"
-                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/settings/general') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      <span className={`${collapsed ? 'hidden' : ''}`}>General</span>
-                    </div>
-
-                    <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/settings/security"
-                    className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive('/settings/security') ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      <span className={`${collapsed ? 'hidden' : ''}`}>Security</span>
-                    </div>
-
-                    <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
-                  </Link>
-                </li>
-
-              </ul>
-            )}
-          </li>
-
+            // simple link
+            return (
+              <li key={item.key}>
+                <Link
+                  to={item.to}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${isActive(item.to) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
+                >
+                  {Icon && <Icon className="w-5 h-5" />}
+                  <span className={`${collapsed ? 'hidden' : ''}`}>{item.label}</span>
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </nav>
 

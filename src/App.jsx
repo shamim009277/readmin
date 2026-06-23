@@ -8,6 +8,11 @@ import AddUser from "./pages/AddUser";
 import GeneralSettings from "./pages/GeneralSettings";
 import SecuritySettings from "./pages/SecuritySettings";
 
+import UITable from "./pages/ui/Table";
+import TableAdvance from "./pages/ui/TableAdvance";
+import Accordion from "./pages/ui/Accordion";
+import Modal from "./pages/ui/ModalPage";
+
 export const App = () => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -28,6 +33,13 @@ export const App = () => {
                 <Route path="/users/add" element={<AddUser />} />
                 <Route path="/settings/general" element={<GeneralSettings />} />
                 <Route path="/settings/security" element={<SecuritySettings />} />
+
+                <Route path="/ui/table" element={<UITable />} />
+                <Route path="/ui/table-advance" element={<TableAdvance />} />
+                <Route path="/ui/accordion" element={<Accordion />} />
+                <Route path="/ui/modal" element={<Modal />} />
+                
+
                 <Route path="*" element={<Dashboard />} />
               </Routes>
             </main>
