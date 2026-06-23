@@ -34,7 +34,7 @@ const Filter = ({ className = '' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 6H2"/><path d="M6 6v12"/><path d="M18 6v12"/></svg>
 )
 
-export const Header = ({ setCollapsed, collapsed }) => {
+export const Header = ({ setCollapsed, collapsed, onToggle }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationCount = 12;
 
@@ -43,7 +43,7 @@ export const Header = ({ setCollapsed, collapsed }) => {
       <div className="flex items-center justify-between">
         {/*--- Left Section ---*/}
         <div className="flex items-center space-x-4">
-          <button onClick={() => setCollapsed && setCollapsed(c => !c)} className="p-2 rounded-md  hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors duration-200" aria-label="Toggle sidebar">
+          <button onClick={() => (onToggle ? onToggle() : setCollapsed && setCollapsed(c => !c))} className="p-2 rounded-md  hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors duration-200" aria-label="Toggle sidebar">
             <Menu className="w-5 h-5 text-slate-600 dark:text-slate-300" />
           </button>
 

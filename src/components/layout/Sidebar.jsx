@@ -56,7 +56,7 @@ const MENU = [
   },
 ]
 
-export const Sidebar = ({ collapsed, menuData }) => {
+export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
   const [openMenu, setOpenMenu] = useState(null);
   const location = useLocation();
 
@@ -72,6 +72,21 @@ export const Sidebar = ({ collapsed, menuData }) => {
     else setOpenMenu(null);
   }, [location.pathname]);
 
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    if (mobileOpen && setMobileOpen) setMobileOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  // Close on Escape
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape' && mobileOpen && setMobileOpen) setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen, setMobileOpen]);
+
   const isActive = (matchPath) => {
     const path = location.pathname || '/';
     return path === matchPath;
@@ -85,7 +100,16 @@ export const Sidebar = ({ collapsed, menuData }) => {
   const items = menuData || MENU;
 
   return (
-    <div className={`transition duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10 ${collapsed ? 'w-20' : 'w-60'} h-screen`}>
+    <>
+      {/* Overlay for mobile when sidebar is open */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={() => setMobileOpen && setMobileOpen(false)}
+        />
+      )}
+
+      <div className={`transition-transform transform duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col z-50 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${collapsed ? 'md:w-20' : 'md:w-60'} w-60 h-screen fixed md:relative left-0 top-0`}>
       {/*--- logo ---*/}
       <div className="px-4 py-2 border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="flex items-center space-x-3">
@@ -190,6 +214,7 @@ export const Sidebar = ({ collapsed, menuData }) => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
