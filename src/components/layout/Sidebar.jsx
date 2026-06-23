@@ -52,6 +52,7 @@ const MENU = [
       { key: 'advance-table', label: 'Advance Table', to: '/ui/table-advance' },
       { key: 'accordion', label: 'Accordion', to: '/ui/accordion' },
       { key: 'modal', label: 'Modal', to: '/ui/modal' },
+      { key: 'tab', label: 'Tabs', to: '/ui/tab' },
     ],
   },
 ]
