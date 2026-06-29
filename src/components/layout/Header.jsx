@@ -39,8 +39,8 @@ export const Header = ({ setCollapsed, collapsed, onToggle }) => {
   const notificationCount = 12;
 
   return (
-    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 px-4 py-2">
-      <div className="flex items-center justify-between">
+    <div className="h-20 min-h-[80px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 px-4 py-4 flex items-center">
+      <div className="flex items-center justify-between w-full">
         {/*--- Left Section ---*/}
         <div className="flex items-center space-x-4">
           <button onClick={() => (onToggle ? onToggle() : setCollapsed && setCollapsed(c => !c))} className="p-2 rounded-md  hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors duration-200" aria-label="Toggle sidebar">

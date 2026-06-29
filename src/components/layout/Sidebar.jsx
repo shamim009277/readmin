@@ -53,6 +53,7 @@ const MENU = [
       { key: 'accordion', label: 'Accordion', to: '/ui/accordion' },
       { key: 'modal', label: 'Modal', to: '/ui/modal' },
       { key: 'tab', label: 'Tabs', to: '/ui/tab' },
+      { key: 'input-pages', label: 'Basic Inputs', to: '/ui/input-pages' },
     ],
   },
 ]
@@ -122,8 +123,8 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
 
       <div className={`transition-transform transform duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col z-50 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${collapsed ? 'md:w-20' : 'md:w-60'} w-60 h-screen fixed md:relative left-0 top-0`}>
       {/*--- logo ---*/}
-      <div className="px-4 py-2 border-b border-slate-200/50 dark:border-slate-700/50">
-        <div className="flex items-center space-x-3">
+      <div className="h-20 min-h-[80px] px-4 py-4 border-b border-slate-200/50 dark:border-slate-700/50 flex items-center">
+        <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'space-x-3'}`}>
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-lg rounded-xl">
             <Zap className="w-6 h-6 text-white" />
           </div>

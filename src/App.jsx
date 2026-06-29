@@ -13,6 +13,7 @@ import TableAdvance from "./pages/ui/TableAdvance";
 import Accordion from "./pages/ui/Accordion";
 import Modal from "./pages/ui/ModalPage";
 import TabPage from "./pages/ui/Tab";
+import InputPage from "./pages/ui/InputPage";
 
 export const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -49,6 +50,7 @@ export const App = () => {
                 <Route path="/ui/accordion" element={<Accordion />} />
                 <Route path="/ui/modal" element={<Modal />} />
                 <Route path="/ui/tab" element={<TabPage />} />
+                <Route path="/ui/input-pages" element={<InputPage />} />
                 
 
                 <Route path="*" element={<Dashboard />} />
