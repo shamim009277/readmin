@@ -121,11 +121,11 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
         />
       )}
 
-      <div className={`transition-transform transform duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col z-50 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${collapsed ? 'md:w-20' : 'md:w-60'} w-60 h-screen fixed md:relative left-0 top-0`}>
+      <div className={`transition-transform transform duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col z-50 overflow-visible ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${collapsed ? 'md:w-20' : 'md:w-60'} w-60 h-screen fixed md:relative left-0 top-0`}>
       {/*--- logo ---*/}
       <div className="h-20 min-h-[80px] px-4 py-4 border-b border-slate-200/50 dark:border-slate-700/50 flex items-center">
         <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-lg rounded-xl">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-lg rounded-md">
             <Zap className="w-6 h-6 text-white" />
           </div>
 
@@ -149,7 +149,7 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
             </ul>
         </nav> */}
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-2 overflow-visible">
 
         <ul className="space-y-2">
           {items.map((item) => {
@@ -163,42 +163,62 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
                 return parts.length ? `/${parts[0]}` : null;
               })();
               return (
-                <li key={item.key}>
-                  <button
-                    onClick={() => toggleMenu(item.key)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${parentPrefix && isParentActive(parentPrefix) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {Icon && <Icon className="w-5 h-5" />}
-                      <span className={`${collapsed ? 'hidden' : ''}`}>{item.label}</span>
-                    </div>
+                <li key={item.key} className="relative">
+                  <div className="group relative">
+                    <button
+                      onClick={() => toggleMenu(item.key)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition ${parentPrefix && isParentActive(parentPrefix) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {Icon && <Icon className="w-5 h-5" />}
+                        <span className={`${collapsed ? 'hidden' : ''}`}>{item.label}</span>
+                      </div>
 
-                    {!collapsed && (
-                      <ChevronRight
-                        className={`w-4 h-4 transition-transform duration-200 ${openMenu === item.key ? 'rotate-90' : ''}`}
-                      />
+                      {!collapsed && (
+                        <ChevronRight
+                          className={`w-4 h-4 transition-transform duration-200 ${openMenu === item.key ? 'rotate-90' : ''}`}
+                        />
+                      )}
+                    </button>
+
+                    {!collapsed ? (
+                      openMenu === item.key && (
+                        <ul className="ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1">
+                          {item.children.map((child) => (
+                            <li key={child.key}>
+                              <Link
+                                to={child.to}
+                                className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive(child.to) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                                  <span>{child.label}</span>
+                                </div>
+
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                    ) : (
+                      <div className="pointer-events-none absolute left-full top-0 ml-2 hidden min-w-[180px] rounded-md border border-slate-200/70 bg-white/95 p-2 shadow-xl backdrop-blur-xl group-hover:block group-hover:pointer-events-auto z-[70]">
+                        <ul className="space-y-1">
+                          {item.children.map((child) => (
+                            <li key={child.key}>
+                              <Link
+                                to={child.to}
+                                className={`flex items-center justify-between px-2 py-2 rounded-md text-sm transition ${isActive(child.to) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
+                              >
+                                <span>{child.label}</span>
+                                <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
-                  </button>
-
-                  {openMenu === item.key && (
-                    <ul className={`ml-6 mt-2 pl-3 border-l border-slate-200 dark:border-slate-700 space-y-1 ${collapsed ? 'hidden' : ''}`}>
-                      {item.children.map((child) => (
-                        <li key={child.key}>
-                          <Link
-                            to={child.to}
-                            className={`group flex items-center justify-between px-2 py-1.5 rounded-md text-sm transition ${isActive(child.to) ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600'}`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                              <span className={`${collapsed ? 'hidden' : ''}`}>{child.label}</span>
-                            </div>
-
-                            <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition" />
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  </div>
                 </li>
               )
             }
@@ -221,7 +241,7 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
 
       {/*--- User Profile ---*/}
       <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
-        <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 cursor-pointer">
+        <div className="flex items-center space-x-3 p-3 rounded-md bg-slate-50 dark:bg-slate-900/50 cursor-pointer">
           <img src="https://i.pravatar.cc/300" alt="User Avatar" className="w-10 h-10 rounded-full ring-2 ring-blue-500" />
 
           <div className="flex-1 min-w-0">
