@@ -240,8 +240,8 @@ export const Sidebar = ({ collapsed, menuData, mobileOpen, setMobileOpen }) => {
       </nav>
 
       {/*--- User Profile ---*/}
-      <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
-        <div className="flex items-center space-x-3 p-3 rounded-md bg-slate-50 dark:bg-slate-900/50 cursor-pointer">
+      <div className="h-14 min-h-[56px] px-4 py-3 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center">
+        <div className="flex items-center space-x-3 p-3 rounded-md bg-slate-50 dark:bg-slate-900/50 cursor-pointer w-full">
           <img src="https://i.pravatar.cc/300" alt="User Avatar" className="w-10 h-10 rounded-full ring-2 ring-blue-500" />
 
           <div className="flex-1 min-w-0">

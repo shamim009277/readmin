@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Layout/Sidebar";
 import Header from "./components/Layout/Header";
+import Footer from "./components/Layout/Footer";
 import Dashboard from "./pages/Dashboard";
 import AllUsers from "./pages/AllUsers";
 import AddUser from "./pages/AddUser";
@@ -37,25 +38,30 @@ export const App = () => {
             <Header collapsed={collapsed} setCollapsed={setCollapsed} onToggle={toggleSidebar} />
 
             <main className="flex-1 overflow-auto p-4">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/users" element={<AllUsers />} />
-                <Route path="/users/all" element={<AllUsers />} />
-                <Route path="/users/add" element={<AddUser />} />
-                <Route path="/settings/general" element={<GeneralSettings />} />
-                <Route path="/settings/security" element={<SecuritySettings />} />
+              <div className="flex min-h-full flex-col">
+                <div className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/users" element={<AllUsers />} />
+                    <Route path="/users/all" element={<AllUsers />} />
+                    <Route path="/users/add" element={<AddUser />} />
+                    <Route path="/settings/general" element={<GeneralSettings />} />
+                    <Route path="/settings/security" element={<SecuritySettings />} />
 
-                <Route path="/ui/table" element={<UITable />} />
-                <Route path="/ui/table-advance" element={<TableAdvance />} />
-                <Route path="/ui/accordion" element={<Accordion />} />
-                <Route path="/ui/modal" element={<Modal />} />
-                <Route path="/ui/tab" element={<TabPage />} />
-                <Route path="/ui/input-pages" element={<InputPage />} />
-                
+                    <Route path="/ui/table" element={<UITable />} />
+                    <Route path="/ui/table-advance" element={<TableAdvance />} />
+                    <Route path="/ui/accordion" element={<Accordion />} />
+                    <Route path="/ui/modal" element={<Modal />} />
+                    <Route path="/ui/tab" element={<TabPage />} />
+                    <Route path="/ui/input-pages" element={<InputPage />} />
 
-                <Route path="*" element={<Dashboard />} />
-              </Routes>
+                    <Route path="*" element={<Dashboard />} />
+                  </Routes>
+                </div>
+
+              </div>
             </main>
+            <Footer />
           </div>
         </div>
       </BrowserRouter>
